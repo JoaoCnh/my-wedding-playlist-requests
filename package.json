@@ -20,6 +20,7 @@
     "@solidjs/router": "^0.7.0",
     "@supabase/supabase-js": "^2.7.0",
     "cachified": "^3.1.0",
+    "classnames": "^2.3.2",
     "lru-cache": "^7.14.1",
     "seamless-scroll-polyfill": "^2.3.0",
     "solid-js": "^1.6.10",

@@ -3,12 +3,12 @@ import { Index } from "solid-js";
 import type { PlaylistRequest } from "~/types";
 
 export default function AnimatedTitle(props: AnimatedTitleProps) {
-  const { albums } = props;
+  const { songs } = props;
 
   return (
     <div class="h-14 w-full flex flex-col justify-center items-center mx-4">
-      <Index each={albums}>
-        {(album, index) => {
+      <Index each={songs}>
+        {(song, index) => {
           return (
             <span
               class="absolute w-1/2 flex flex-col text-white text-center transition-all duration-500 truncate"
@@ -21,9 +21,9 @@ export default function AnimatedTitle(props: AnimatedTitleProps) {
               }}
             >
               <span class="block text-2xl md:text-4xl font-bold uppercase">
-                {album().track_name}
+                {song().track_name}
               </span>
-              <span class="block uppercase">{album().track_artists}</span>
+              <span class="block uppercase">{song().track_artists}</span>
             </span>
           );
         }}
@@ -33,6 +33,6 @@ export default function AnimatedTitle(props: AnimatedTitleProps) {
 }
 
 interface AnimatedTitleProps {
-  albums: PlaylistRequest[];
+  songs: PlaylistRequest[];
   selectedIndex: number;
 }

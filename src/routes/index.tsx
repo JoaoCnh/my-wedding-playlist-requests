@@ -5,7 +5,8 @@ import { getPlaylistRequests$ } from "~/lib/playlist.server";
 import { createSignal } from "solid-js";
 import { useRouteData } from "solid-start";
 
-import AlbumCarousel from "~/components/AlbumCarousel";
+import { random } from "~/lib/random";
+import SongCarousel from "~/components/SongCarousel";
 import MusicControls from "~/components/MusicControls";
 import AnimatedTitle from "~/components/AnimatedTitle";
 
@@ -18,22 +19,24 @@ export default function Home() {
 
   if (!requests()) return null;
 
-  const albums = requests() || [];
+  const songs = requests() || [];
+
+  const songCount = songs.length - 1;
 
   const [selectedIndex, setSelectedIndex] = createSignal(
-    Math.floor(albums.length / 2)
+    Math.floor(songs.length / 2)
   );
 
-  const album = () => albums[selectedIndex()];
+  const album = () => songs[selectedIndex()];
 
   return (
     <main class="h-full flex flex-col items-center justify-center">
-      <AnimatedTitle albums={albums} selectedIndex={selectedIndex()} />
+      <AnimatedTitle songs={songs} selectedIndex={selectedIndex()} />
 
-      <AlbumCarousel
-        albums={albums}
+      <SongCarousel
+        songs={songs}
         selectedIndex={selectedIndex()}
-        onAlbumSelect={(index) => {
+        onSongSelect={(index) => {
           setSelectedIndex(index);
         }}
       />
@@ -41,12 +44,21 @@ export default function Home() {
       <MusicControls
         previewUrl={album().track_preview_url}
         prevDisabled={selectedIndex() === 0}
-        nextDisabled={selectedIndex() === albums.length - 1}
+        nextDisabled={selectedIndex() === songCount}
         onPrev={() => {
           setSelectedIndex((prev) => Math.max(0, prev - 1));
         }}
+        onGoToStart={() => {
+          setSelectedIndex(0);
+        }}
         onNext={() => {
-          setSelectedIndex((prev) => Math.min(prev + 1, albums.length - 1));
+          setSelectedIndex((prev) => Math.min(prev + 1, songCount));
+        }}
+        onGoToEnd={() => {
+          setSelectedIndex(songCount);
+        }}
+        onShuffle={() => {
+          setSelectedIndex(random(0, songCount));
         }}
       />
     </main>
