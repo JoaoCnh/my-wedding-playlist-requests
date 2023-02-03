@@ -16,7 +16,7 @@ const lruCache = new LRUCache<string, CacheEntry<PlaylistRequest[]>>({
 
 const cache = lruCacheAdapter(lruCache);
 
-export async function getPlaylistRequests(): Promise<PlaylistRequest[]> {
+export async function getPlaylistRequests$(): Promise<PlaylistRequest[]> {
   return cachified({
     key: "playlist-requests",
     cache,
