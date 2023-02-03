@@ -20,6 +20,7 @@
     "@supabase/supabase-js": "^2.4.1",
     "cachified": "^3.1.0",
     "lru-cache": "^7.14.1",
+    "seamless-scroll-polyfill": "^2.3.0",
     "solid-js": "^1.6.9",
     "solid-start": "^0.2.15",
     "undici": "^5.15.1"
