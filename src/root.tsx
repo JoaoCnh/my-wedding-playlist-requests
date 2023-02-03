@@ -12,6 +12,8 @@ import {
   Title,
 } from "solid-start";
 
+import Footer from "./components/Footer";
+
 import "./root.css";
 import "./client-polyfills";
 
@@ -29,6 +31,7 @@ export default function Root() {
             <Routes>
               <FileRoutes />
             </Routes>
+            <Footer />
           </ErrorBoundary>
         </Suspense>
         <Scripts />
