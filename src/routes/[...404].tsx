@@ -1,31 +1,10 @@
-import { A } from "solid-start";
-
 export default function NotFound() {
   return (
-    <main class="text-center mx-auto text-gray-700 p-4">
-      <h1 class="max-6-xs text-6xl text-sky-700 font-thin uppercase my-16">
-        Not Found
-      </h1>
-      <p class="mt-8">
-        Visit{" "}
-        <a
-          href="https://solidjs.com"
-          target="_blank"
-          class="text-sky-600 hover:underline"
-        >
-          solidjs.com
-        </a>{" "}
-        to learn how to build Solid apps.
-      </p>
-      <p class="my-4">
-        <A href="/" class="text-sky-600 hover:underline">
-          Home
-        </A>
-        {" - "}
-        <A href="/about" class="text-sky-600 hover:underline">
-          About Page
-        </A>
-      </p>
+    <main class="h-full flex flex-col items-center justify-center text-center text-white">
+      <h1 class="text-5xl font-bold uppercase">where are you?!</h1>
+      <a href="/" class="underline mt-4">
+        Get back to listening!
+      </a>
     </main>
   );
 }
