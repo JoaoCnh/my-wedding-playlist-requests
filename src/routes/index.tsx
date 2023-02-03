@@ -1,31 +1,52 @@
-import { A } from "solid-start";
-import Counter from "~/components/Counter";
+// server
+import { createServerData$ } from "solid-start/server";
+import { getPlaylistRequests } from "~/lib/playlist.server";
+// client
+import { createSignal } from "solid-js";
+import { useRouteData } from "solid-start";
+
+import AlbumCarousel from "~/components/AlbumCarousel";
+import MusicControls from "~/components/MusicControls";
+import AnimatedTitle from "~/components/AnimatedTitle";
+
+export function routeData() {
+  return createServerData$(() => getPlaylistRequests());
+}
 
 export default function Home() {
+  const { latest } = useRouteData<typeof routeData>();
+
+  if (!latest) return null;
+
+  const [selectedIndex, setSelectedIndex] = createSignal(
+    Math.floor(latest.length / 2)
+  );
+
+  const album = () => latest[selectedIndex()];
+
   return (
-    <main class="text-center mx-auto text-gray-700 p-4">
-      <h1 class="max-6-xs text-6xl text-sky-700 font-thin uppercase my-16">
-        Hello world!
-      </h1>
-      <Counter />
-      <p class="mt-8">
-        Visit{" "}
-        <a
-          href="https://solidjs.com"
-          target="_blank"
-          class="text-sky-600 hover:underline"
-        >
-          solidjs.com
-        </a>{" "}
-        to learn how to build Solid apps.
-      </p>
-      <p class="my-4">
-        <span>Home</span>
-        {" - "}
-        <A href="/about" class="text-sky-600 hover:underline">
-          About Page
-        </A>{" "}
-      </p>
+    <main class="h-full flex flex-col items-center justify-center">
+      <AnimatedTitle albums={latest} selectedIndex={selectedIndex()} />
+
+      <AlbumCarousel
+        albums={latest}
+        selectedIndex={selectedIndex()}
+        onAlbumSelect={(index) => {
+          setSelectedIndex(index);
+        }}
+      />
+
+      <MusicControls
+        previewUrl={album().track_preview_url}
+        prevDisabled={selectedIndex() === 0}
+        nextDisabled={selectedIndex() === latest.length - 1}
+        onPrev={() => {
+          setSelectedIndex((prev) => Math.max(0, prev - 1));
+        }}
+        onNext={() => {
+          setSelectedIndex((prev) => Math.min(prev + 1, latest.length - 1));
+        }}
+      />
     </main>
   );
 }
