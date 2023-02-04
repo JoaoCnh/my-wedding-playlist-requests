@@ -1,12 +1,13 @@
 import { createEffect, createSignal, JSX, Show } from "solid-js";
 import cx from "classnames";
 
+import { random } from "~/lib/random";
+import { useCarouselProvider } from "~/providers/CarouselProvider";
+
 import LeftChevron from "./LeftChevron";
 import PauseCircle from "./PauseCircle";
 import PlayCircle from "./PlayCircle";
 import RightChevron from "./RightChevron";
-import DoubleLeftChevron from "./DoubleLeftChevron";
-import DoubleRightChevron from "./DoubleRightChevron";
 import Shuffle from "./Shuffle";
 
 type HTMLButtonProps = JSX.ButtonHTMLAttributes<HTMLButtonElement>;
@@ -23,10 +24,6 @@ function ControlButton(props: HTMLButtonProps) {
   );
 }
 
-function SmallerButton(props: HTMLButtonProps) {
-  return <ChevronButton {...props} class={cx(props.class, "w-8 h-8")} />;
-}
-
 function ChevronButton(props: HTMLButtonProps) {
   return <ControlButton {...props} class={cx(props.class, "w-12 h-12")} />;
 }
@@ -35,12 +32,16 @@ function PlayPauseButton(props: HTMLButtonProps) {
   return <ControlButton {...props} class={cx(props.class, "w-24 h-24")} />;
 }
 
-export default function MusicControls(props: MusicControlsProps) {
-  const { onPrev, onNext, onGoToStart, onGoToEnd, onShuffle } = props;
+export default function MusicControls() {
+  const ctx = useCarouselProvider();
 
   let audioPlayer: HTMLAudioElement | undefined;
 
   const [playing, setPlaying] = createSignal(false);
+
+  const previewUrl = () => ctx.selectedSong().track_preview_url;
+  const prevDisabled = () => ctx.selectedIndex() === 0;
+  const nextDisabled = () => ctx.selectedIndex() === ctx.songs.length - 1;
 
   const play = () => {
     setPlaying(true);
@@ -54,10 +55,10 @@ export default function MusicControls(props: MusicControlsProps) {
 
   createEffect(() => {
     if (audioPlayer) {
-      audioPlayer.src = props.previewUrl;
+      audioPlayer.src = previewUrl();
       playing() && play();
     } else {
-      audioPlayer = new window.Audio(props.previewUrl);
+      audioPlayer = new window.Audio(previewUrl());
     }
 
     audioPlayer.onended = () => {
@@ -67,17 +68,11 @@ export default function MusicControls(props: MusicControlsProps) {
 
   return (
     <div class="relative mx-auto flex items-center justify-evenly my-7 px-4 bg-slate-50 rounded-full drop-shadow-xl">
-      <SmallerButton
-        disabled={props.prevDisabled}
-        onClick={() => onGoToStart()}
-        aria-label="Jump to the start"
-      >
-        <DoubleLeftChevron class="w-full" />
-      </SmallerButton>
-
       <ChevronButton
-        disabled={props.prevDisabled}
-        onClick={() => onPrev()}
+        disabled={prevDisabled()}
+        onClick={() => {
+          ctx.scrollToItem(ctx.selectedIndex() - 1);
+        }}
         aria-label="Previous album"
       >
         <LeftChevron class="w-full" />
@@ -97,39 +92,24 @@ export default function MusicControls(props: MusicControlsProps) {
       </Show>
 
       <ChevronButton
-        disabled={props.nextDisabled}
-        onClick={() => onNext()}
+        disabled={nextDisabled()}
+        onClick={() => {
+          ctx.scrollToItem(ctx.selectedIndex() + 1);
+        }}
         aria-label="Next album"
       >
         <RightChevron class="w-full" />
       </ChevronButton>
 
-      <SmallerButton
-        disabled={props.nextDisabled}
-        onClick={() => onGoToEnd()}
-        aria-label="Jump to the end"
-      >
-        <DoubleRightChevron class="w-full" />
-      </SmallerButton>
-
       <ChevronButton
         class="absolute -bottom-14"
-        onClick={() => onShuffle()}
+        onClick={() => {
+          ctx.scrollToItem(random(0, ctx.songs.length - 1));
+        }}
         aria-label="Shuffle"
       >
         <Shuffle class="w-full text-white drop-shadow-2xl" />
       </ChevronButton>
     </div>
   );
-}
-
-interface MusicControlsProps {
-  previewUrl: string;
-  prevDisabled: boolean;
-  nextDisabled: boolean;
-  onNext: () => void;
-  onGoToStart: () => void;
-  onPrev: () => void;
-  onGoToEnd: () => void;
-  onShuffle: () => void;
 }

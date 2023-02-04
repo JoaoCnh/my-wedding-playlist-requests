@@ -1,21 +1,21 @@
 import { Index } from "solid-js";
 
-import type { PlaylistRequest } from "~/types";
+import { useCarouselProvider } from "~/providers/CarouselProvider";
 
-export default function AnimatedTitle(props: AnimatedTitleProps) {
-  const { songs } = props;
+export default function AnimatedTitle() {
+  const ctx = useCarouselProvider();
 
   return (
     <div class="h-14 w-full flex flex-col justify-center items-center mx-4">
-      <Index each={songs}>
+      <Index each={ctx.songs}>
         {(song, index) => {
           return (
             <span
-              class="absolute w-1/2 flex flex-col text-white text-center transition-all duration-500 truncate"
+              class="absolute w-full md:w-1/2 flex flex-col text-white text-center transition-all duration-500 truncate"
               style={{
-                opacity: index === props.selectedIndex ? 1 : 0,
+                opacity: index === ctx.selectedIndex() ? 1 : 0,
                 transform:
-                  index === props.selectedIndex
+                  index === ctx.selectedIndex()
                     ? `translateY(0)`
                     : `translateY(3.5rem)`,
               }}
@@ -30,9 +30,4 @@ export default function AnimatedTitle(props: AnimatedTitleProps) {
       </Index>
     </div>
   );
-}
-
-interface AnimatedTitleProps {
-  songs: PlaylistRequest[];
-  selectedIndex: number;
 }
