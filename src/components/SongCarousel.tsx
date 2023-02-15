@@ -5,10 +5,6 @@ import { useCarouselProvider } from "~/providers/CarouselProvider";
 
 type ScrollEvent = UIEvent & { currentTarget: HTMLDivElement; target: Element };
 
-function getElementWidth(el: Element) {
-  return el.getBoundingClientRect().width;
-}
-
 export default function SongCarousel() {
   const ctx = useCarouselProvider();
 
@@ -21,7 +17,7 @@ export default function SongCarousel() {
   const handleScroll = (e: ScrollEvent) => {
     if (!carousel || !carousel.firstElementChild) return;
 
-    const childWidth = getElementWidth(carousel.firstElementChild);
+    const childWidth = carousel.firstElementChild.getBoundingClientRect().width;
     const songIndex = Math.floor(e.target.scrollLeft / childWidth);
 
     ctx.highlightItem(songIndex);
