@@ -12,11 +12,16 @@ const [CarouselProvider, useCarouselProvider] = createContextProvider(
     const songCount = props.songs.length - 1;
 
     const [selectedIndex, setSelectedIndex] = createSignal(props.initial);
+    const [opacityIndex, setOpacityIndex] = createSignal(props.initial);
 
     const selectedSong = () => props.songs[selectedIndex()];
 
     const selectItem = (index: number) => {
       setSelectedIndex(clamp(index, 0, songCount));
+    };
+
+    const highlightItem = (index: number) => {
+      setOpacityIndex(clamp(index, 0, songCount));
     };
 
     const registerItem = (index: number, el: HTMLElement) => {
@@ -37,20 +42,24 @@ const [CarouselProvider, useCarouselProvider] = createContextProvider(
       carouselItems,
       selectedSong,
       selectedIndex,
+      opacityIndex,
       selectItem,
       registerItem,
       scrollToItem,
+      highlightItem,
     };
   },
   {
     songs: [],
     carouselItems: new Map(),
     selectedIndex: () => 0,
+    opacityIndex: () => 0,
     // @ts-ignore
     selectedSong: () => undefined,
     selectItem: () => {},
     registerItem: () => {},
     scrollToItem: () => {},
+    highlightItem: () => {},
   }
 );
 
